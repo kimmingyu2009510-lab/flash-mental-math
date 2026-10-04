@@ -1,0 +1,59 @@
+SumGym의 "진법" 카테고리를 바꿔줘. 지금의 모드 7개(10진수→2진수, 2진수 덧셈 등)는 없애고, "n진법 ↔ 10진법 변환 연습"만 남기려고 해. 사용자가 방향과 m(진법)을 직접 고르게 해줘.
+
+## 1. js/generators.js
+- 기존 진법 관련 코드(numWithBits, BASE_TIER, baseCfg, digitsAsNumber, genDecToBin, genBinToDec, genOctal, genHexToDec, genHexToBin, genBinAdd, BASE_GENERATORS, 예전 generateBaseProblem)를 모두 지우고, 다른 곳에서 안 쓰이는지 확인해줘.
+- 아래 코드를 그대로 추가해줘. 12,000문제 이상 검산해서 정확성을 확인한 코드니까 로직을 바꾸지 마. randInt는 이미 있으니 다시 정의하지 말고, 파일 맨 아래 module.exports에는 generateBaseProblem을 유지해줘.
+
+function baseMaxDigits(m){
+  let d = 0, v = 1;
+  while(d < 8 && v * m <= 5000){ v *= m; d++; }
+  return d;
+}
+
+function baseDigitRange(m, tier){
+  const dmax = baseMaxDigits(m);
+  let lo, hi;
+  if(tier === 'easy'){
+    lo = (m === 2) ? 3 : 2;
+    hi = Math.max(lo, Math.floor(dmax * 0.5));
+  } else if(tier === 'hard'){
+    lo = Math.max(2, Math.ceil(dmax * 0.75));
+    hi = dmax;
+  } else {
+    lo = Math.max(2, Math.ceil(dmax * 0.5));
+    hi = Math.max(lo, Math.ceil(dmax * 0.75));
+  }
+  hi = Math.min(hi, dmax);
+  lo = Math.min(lo, hi);
+  return [lo, hi];
+}
+
+function numWithDigitsInBase(m, d){
+  return randInt(Math.pow(m, d - 1), Math.pow(m, d) - 1);
+}
+
+function generateBaseProblem(dir, m, tier){
+  m = parseInt(m, 10);
+  if(m === 10 || !(m >= 2 && m <= 16)) m = 2;
+  if(dir === 'to' && m > 9) m = 9;
+
+  const [lo, hi] = baseDigitRange(m, tier);
+  const n = numWithDigitsInBase(m, randInt(lo, hi));
+
+  if(dir === 'to'){
+    return { displayType:'prompt', promptText:`10진수 ${n} → ${m}진수로 바꾸면?`, answer: parseInt(n.toString(m), 10), mode: dir };
+  }
+  return { displayType:'prompt', promptText:`${m}진수 ${n.toString(m).toUpperCase()} → 10진수로 바꾸면?`, answer: n, mode: dir };
+}
+
+## 2. index.html (#base-config 영역을 아래처럼 바꿔줘)
+기존 7개 모드 버튼은 지우고, 위에서부터 이 순서로 구성해줘. 기존 클래스(mode-btn, digit-row, digit-select, tier-row)를 재사용하고 새 CSS는 최소로.
+- 방향 버튼 2개 (mode-btn 스타일): data-dir="to" "10진수 → m진수" (기본 선택), data-dir="from" "m진수 → 10진수".
+- m 선택 드롭다운 (select, id="base-m", 라벨 "m (몇 진법으로 연습할까요)"), 기본값 2진법.
+  - 방향이 "to"일 때 선택지: 2~9진법
+  - 방향이 "from"일 때 선택지: 2~9진법, 11~16진법 (10진법은 넣지 마)
+  - 선택지 글자는 "2진법", "3진법"처럼 보여줘.
+- 난이도 버튼 쉬움/보통/어려움 (보통 기본 선택).
+- 안내문: "10진수 → m진수 문제는 답을 숫자 0~9로 입력해요. 앞의 0은 생략해도 돼요. 11~16진수는 'm진수 → 10진수' 문제에서만 나와요 (A=10, B=11, C=12, D=13, E=14, F=15)."
+
+## 3.
