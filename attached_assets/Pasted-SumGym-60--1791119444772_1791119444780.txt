@@ -1,0 +1,94 @@
+SumGym에 "진법" 카테고리를 추가해줘. 기존 사칙연산, 경우의수 카테고리와 같은 방식(키패드 입력, 정답을 맞혀야 다음 문제, 연습 모드, 60초 챌린지)으로 동작해야 해.
+
+## 1. js/generators.js 맨 아래(module.exports 위)에 아래 코드를 그대로 추가
+이 코드는 12,000문제를 검산해서 정확성을 확인한 코드야. 로직을 바꾸지 말고 그대로 써줘. randInt는 이미 파일에 있으니 다시 정의하지 마. 파일 맨 아래의 module.exports에는 generateBaseProblem, BASE_GENERATORS를 추가해줘.
+
+function numWithBits(bits){ return randInt(1 << (bits-1), (1 << bits) - 1); }
+
+const BASE_TIER = {
+  easy:   { bits:[3,4], octRange:[8,63],     hexDecRange:[10,63],    hexBinRange:[1,15] },
+  normal: { bits:[5,6], octRange:[64,511],   hexDecRange:[64,255],   hexBinRange:[16,127] },
+  hard:   { bits:[7,8], octRange:[512,4095], hexDecRange:[256,4095], hexBinRange:[128,255] },
+};
+function baseCfg(tier){ return BASE_TIER[tier] || BASE_TIER.normal; }
+function digitsAsNumber(str){ return parseInt(str, 10); }
+
+function genDecToBin(tier){
+  const cfg = baseCfg(tier);
+  const n = numWithBits(randInt(cfg.bits[0], cfg.bits[1]));
+  return { displayType:'prompt', promptText:`10진수 ${n} → 2진수로 바꾸면?`, answer: digitsAsNumber(n.toString(2)) };
+}
+function genBinToDec(tier){
+  const cfg = baseCfg(tier);
+  const n = numWithBits(randInt(cfg.bits[0], cfg.bits[1]));
+  return { displayType:'prompt', promptText:`2진수 ${n.toString(2)} → 10진수로 바꾸면?`, answer: n };
+}
+function genOctal(tier){
+  const cfg = baseCfg(tier);
+  const n = randInt(cfg.octRange[0], cfg.octRange[1]);
+  if(Math.random() < 0.5){
+    return { displayType:'prompt', promptText:`10진수 ${n} → 8진수로 바꾸면?`, answer: digitsAsNumber(n.toString(8)) };
+  }
+  return { displayType:'prompt', promptText:`8진수 ${n.toString(8)} → 10진수로 바꾸면?`, answer: n };
+}
+function genHexToDec(tier){
+  const cfg = baseCfg(tier);
+  const n = randInt(cfg.hexDecRange[0], cfg.hexDecRange[1]);
+  return { displayType:'prompt', promptText:`16진수 ${n.toString(16).toUpperCase()} → 10진수로 바꾸면?`, answer: n };
+}
+function genHexToBin(tier){
+  const cfg = baseCfg(tier);
+  const n = randInt(cfg.hexBinRange[0], cfg.hexBinRange[1]);
+  return { displayType:'prompt', promptText:`16진수 ${n.toString(16).toUpperCase()} → 2진수로 바꾸면?`, answer: digitsAsNumber(n.toString(2)) };
+}
+function genBinAdd(tier){
+  const bitsByTier = { easy:[3,3], normal:[4,4], hard:[5,6] };
+  const [lo,hi] = bitsByTier[tier] || bitsByTier.normal;
+  const a = numWithBits(randInt(lo,hi)), b = numWithBits(randInt(lo,hi));
+  return { displayType:'prompt', promptText:`2진수 ${a.toString(2)} + ${b.toString(2)} = ? (2진수로 답하기)`, answer: digitsAsNumber((a+b).toString(2)) };
+}
+
+const BASE_GENERATORS = { d2b:genDecToBin, b2d:genBinToDec, oct:genOctal, h2d:genHexToDec, h2b:genHexToBin, badd:genBinAdd };
+
+function generateBaseProblem(mode, tier){
+  let actualMode = mode;
+  if(mode === 'mixed') actualMode = Object.keys(BASE_GENERATORS)[randInt(0, Object.keys(BASE_GENERATORS).length-1)];
+  const p = BASE_GENERATORS[actualMode](tier);
+  return { ...p, mode: actualMode };
+}
+
+## 2. index.html (설정 화면)
+- 카테고리 토글(category-toggle)에 세 번째 버튼을 추가해줘: data-category="base", 글자 "진법".
+- 새 영역 #base-config를 #combo-config와 같은 구조로 만들고, 처음엔 숨겨둬 (경우의수 영역처럼 카테고리를 누르면 보이게).
+  - mode-btn 7개: data-mode="d2b" "10진수→2진수", "b2d" "2진수→10진수", "oct" "8진수 변환", "h2d" "16진수→10진수", "h2b" "16진수→2진수", "badd" "2진수 덧셈", "mixed" "혼합". 첫 번째(d2b)를 기본 선택(is-active)으로.
+  - 난이도 버튼 쉬움/보통/어려움 (data-tier="easy"/"normal"/"hard"), 보통을 기본 선택으로.
+  - 작은 안내문: "2진수 답도 숫자 0과 1로 입력해요. 앞의 0은 생략해도 돼요. 16진수는 문제로만 나오고 답은 항상 숫자예요."
+- 홈 화면의 eyebrow와 meta description에 "진법"을 추가해줘 (예: "사칙연산 · 경우의수 · 진법 암산 트레이닝").
+
+## 3. js/app.js
+- state에 baseMode:'d2b'와 baseTier:'normal'을 추가하고, category가 'base'일 때 newProblem()이 generateBaseProblem(state.baseMode, state.baseTier)를 호출하게 해줘. 문제 표시는 기존 'prompt' 표시 방식이 그대로 처리하니까 renderProblem은 바꿀 필요 없어.
+- selectCategory가 지금 두 카테고리용으로 짜여 있으면 세 카테고리(arith, combo, base)를 모두 처리하도록 일반화해줘. 카테고리를 바꾸면 해당 설정 영역만 보이게.
+- 난이도 버튼은 영역별로 따로 동작해야 해: 경우의수 난이도를 눌러도 진법 난이도 선택 표시가 바뀌면 안 되고, 반대도 마찬가지. 각각 state.tier, state.baseTier를 쓰게 해줘.
+- 모드 버튼 선택도 영역별로 따로 처리해줘.
+- 60초 챌린지 최고기록 저장 키(localStorage)를 카테고리별로 분리해줘. 지금은 모든 카테고리가 같은 키 형식을 써서 섞일 수 있어.
+  - 사칙연산: 기존 그대로 flashmath_best_{mode}_{digitsA}_{digitsB}
+  - 경우의수: flashmath_best_combo_{comboMode}_{tier}
+  - 진법: flashmath_best_base_{baseMode}_{baseTier}
+
+## 4. 팁 글 1개 추가: "진법 변환 쉽게 하는 법" (슬러그: base-conversion)
+기존 articles 글과 같은 구조와 클래스를 써서 만들어줘.
+- 공백 포함 2,000자 이상. 구성: 진법이 필요한 이유 / 2진수·8진수·16진수의 원리 / 10진수→2진수(2로 나누기) / 2진수→10진수(자리값 더하기) / 2진수↔16진수(4비트씩 묶기) / 예제 3개 이상(풀이를 한 줄씩) / 자주 하는 실수 / SumGym 진법 연습 안내 / 한 줄 요약.
+- 모든 계산을 직접 검산해줘. 개인 경험담이나 1인칭 후기는 지어내지 마. 과장 표현도 쓰지 마.
+- 글 맨 아래에 이 주석 한 줄: <!-- MY-NOTE: 여기에 직접 경험 추가 -->
+- articles/index.html에 카드를 추가하고, sitemap.xml에 https://sumgym.pages.dev/articles/base-conversion 을 추가해줘.
+
+## 건드리지 말 것
+- css 폴더 (기존 클래스만 재사용하고 새 CSS는 꼭 필요할 때만 최소로)
+- 기존 팁 글의 내용, 각 페이지의 <head> 안의 meta, script, 주석
+- 사칙연산과 경우의수의 문제 생성 로직
+
+## 끝나면 확인해서 알려줘
+- 진법 7개 모드에서 각각 문제가 뜨는지, 정답을 입력하면 다음 문제로 넘어가고 오답이면 같은 문제가 유지되는지
+- 사칙연산과 경우의수 탭이 예전처럼 정상 동작하는지
+- 카테고리 토글 버튼 3개가 모바일 화면 폭에서 깨지지 않는지
+- 바꾼 파일 목록

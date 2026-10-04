@@ -5,7 +5,7 @@
 <meta name="google-site-verification" content="6xnPVxqEEBaN_RoWFd3N3YOL9bcp1jqrFCgwxBFQGcw" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SumGym — 사칙연산 암산 트레이닝</title>
-<meta name="description" content="사칙연산과 경우의수(순열·조합)를 암산으로 빠르게 연습하는 사이트, SumGym.">
+<meta name="description" content="사칙연산과 경우의수(순열·조합), 진법 변환을 암산으로 빠르게 연습하는 사이트, SumGym.">
 <link rel="stylesheet" href="css/style.css">
 <!-- Google AdSense 코드는 승인 후 이 자리에 삽입하세요 -->
 </head>
@@ -27,7 +27,7 @@
 
 <section class="hero">
   <div class="container hero-copy">
-    <p class="eyebrow">사칙연산 · 경우의수 암산 트레이닝</p>
+    <p class="eyebrow">사칙연산 · 경우의수 · 진법 암산 트레이닝</p>
     <h1>숫자만 보고, 머리로 계산하세요</h1>
     <p class="hero-sub">사칙연산은 자릿수를, 경우의수(순열·조합 등)는 난이도를 골라 연습합니다. 정답을 맞혀야만 다음 문제로 넘어가요.</p>
   </div>
@@ -41,6 +41,7 @@
         <div class="category-toggle">
           <button type="button" data-category="arith" class="is-active">사칙연산</button>
           <button type="button" data-category="combo">경우의수</button>
+          <button type="button" data-category="base">진법</button>
         </div>
 
         <div id="arith-config">
@@ -88,6 +89,24 @@
             <button type="button" class="is-active" data-tier="normal">보통</button>
             <button type="button" data-tier="hard">어려움</button>
           </div>
+        </div>
+
+        <div id="base-config" style="display:none">
+          <div class="mode-grid">
+            <button type="button" class="mode-btn is-active" data-mode="d2b">10진수→2진수</button>
+            <button type="button" class="mode-btn" data-mode="b2d">2진수→10진수</button>
+            <button type="button" class="mode-btn" data-mode="oct">8진수 변환</button>
+            <button type="button" class="mode-btn" data-mode="h2d">16진수→10진수</button>
+            <button type="button" class="mode-btn" data-mode="h2b">16진수→2진수</button>
+            <button type="button" class="mode-btn" data-mode="badd">2진수 덧셈</button>
+            <button type="button" class="mode-btn" data-mode="mixed">혼합</button>
+          </div>
+          <div class="tier-row">
+            <button type="button" data-tier="easy">쉬움</button>
+            <button type="button" class="is-active" data-tier="normal">보통</button>
+            <button type="button" data-tier="hard">어려움</button>
+          </div>
+          <small>2진수 답도 숫자 0과 1로 입력해요. 앞의 0은 생략해도 돼요. 16진수는 문제로만 나오고 답은 항상 숫자예요.</small>
         </div>
 
         <div class="setup-actions">

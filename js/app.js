@@ -1,12 +1,14 @@
 /* 번쩍암산 — 연습/챌린지 진행 로직 */
 
 let state = {
-  category: 'arith', // 'arith' | 'combo'
+  category: 'arith', // 'arith' | 'combo' | 'base'
   mode: 'add',
   comboMode: 'perm',
+  baseMode: 'd2b',
   digitsA: 2,
   digitsB: 2,
   tier: 'normal',
+  baseTier: 'normal',
   sessionType: null, // 'practice' | 'challenge'
   problem: null,
   input: '',
@@ -22,32 +24,42 @@ function show(el){ if(el) el.style.display=''; }
 function hide(el){ if(el) el.style.display='none'; }
 
 function selectCategory(category){
+  const configSelectors = {
+    arith: '#arith-config',
+    combo: '#combo-config',
+    base: '#base-config',
+  };
+  if(!configSelectors[category]) return;
   state.category = category;
   document.querySelectorAll('.category-toggle button').forEach(b=>b.classList.toggle('is-active', b.getAttribute('data-category')===category));
-  const isArith = category === 'arith';
-  show(isArith ? $('#arith-config') : null);
-  hide(isArith ? null : $('#arith-config'));
-  show(!isArith ? $('#combo-config') : null);
-  hide(!isArith ? null : $('#combo-config'));
+  Object.entries(configSelectors).forEach(([name, selector])=>{
+    const config = $(selector);
+    if(name === category) show(config); else hide(config);
+  });
 }
 
 function selectMode(mode, btnEl, groupSelector){
-  if(state.category === 'arith') state.mode = mode; else state.comboMode = mode;
+  if(state.category === 'arith') state.mode = mode;
+  else if(state.category === 'combo') state.comboMode = mode;
+  else if(state.category === 'base') state.baseMode = mode;
   document.querySelectorAll(groupSelector).forEach(b=>b.classList.remove('is-active'));
   if(btnEl) btnEl.classList.add('is-active');
 }
 
-function selectTier(tier, btnEl){
-  state.tier = tier;
-  document.querySelectorAll('.tier-row button').forEach(b=>b.classList.remove('is-active'));
+function selectTier(tier, btnEl, groupSelector){
+  if(state.category === 'combo') state.tier = tier;
+  else if(state.category === 'base') state.baseTier = tier;
+  document.querySelectorAll(groupSelector).forEach(b=>b.classList.remove('is-active'));
   if(btnEl) btnEl.classList.add('is-active');
 }
 
 function newProblem(){
   if(state.category === 'arith'){
     state.problem = generateProblem(state.mode, state.digitsA, state.digitsB);
-  } else {
+  } else if(state.category === 'combo'){
     state.problem = generateComboProblem(state.comboMode, state.tier);
+  } else {
+    state.problem = generateBaseProblem(state.baseMode, state.baseTier);
   }
   state.input = '';
   state.locked = false;
@@ -170,7 +182,11 @@ function endSession(){
     $('#result-big').textContent = `${state.solvedCount}문제`;
     $('#result-label').textContent = '60초 동안 맞힌 문제 수';
 
-    const key = `flashmath_best_${state.mode}_${state.digitsA}_${state.digitsB}`;
+    const key = state.category === 'arith'
+      ? `flashmath_best_${state.mode}_${state.digitsA}_${state.digitsB}`
+      : state.category === 'combo'
+        ? `flashmath_best_combo_${state.comboMode}_${state.tier}`
+        : `flashmath_best_base_${state.baseMode}_${state.baseTier}`;
     let best = 0;
     try{ best = parseInt(localStorage.getItem(key) || '0', 10); }catch(e){}
     let isNew = false;
@@ -205,7 +221,7 @@ function bindKeyboard(){
 }
 
 function initHome(){
-  if(typeof generateProblem === 'undefined') return;
+  if(typeof generateProblem === 'undefined' || typeof generateComboProblem === 'undefined' || typeof generateBaseProblem === 'undefined') return;
 
   document.querySelectorAll('.category-toggle button').forEach(btn=>{
     btn.addEventListener('click', ()=> selectCategory(btn.getAttribute('data-category')));
@@ -217,8 +233,14 @@ function initHome(){
   document.querySelectorAll('#combo-config .mode-btn').forEach(btn=>{
     btn.addEventListener('click', ()=> selectMode(btn.getAttribute('data-mode'), btn, '#combo-config .mode-btn'));
   });
-  document.querySelectorAll('.tier-row button').forEach(btn=>{
-    btn.addEventListener('click', ()=> selectTier(btn.getAttribute('data-tier'), btn));
+  document.querySelectorAll('#base-config .mode-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=> selectMode(btn.getAttribute('data-mode'), btn, '#base-config .mode-btn'));
+  });
+  document.querySelectorAll('#combo-config .tier-row button').forEach(btn=>{
+    btn.addEventListener('click', ()=> selectTier(btn.getAttribute('data-tier'), btn, '#combo-config .tier-row button'));
+  });
+  document.querySelectorAll('#base-config .tier-row button').forEach(btn=>{
+    btn.addEventListener('click', ()=> selectTier(btn.getAttribute('data-tier'), btn, '#base-config .tier-row button'));
   });
 
   document.getElementById('digit-a').addEventListener('change', (e)=> state.digitsA = parseInt(e.target.value,10));
