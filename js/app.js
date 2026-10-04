@@ -4,7 +4,8 @@ let state = {
   category: 'arith', // 'arith' | 'combo' | 'base'
   mode: 'add',
   comboMode: 'perm',
-  baseMode: 'd2b',
+  baseDir: 'to',
+  baseM: 2,
   digitsA: 2,
   digitsB: 2,
   tier: 'normal',
@@ -41,9 +42,24 @@ function selectCategory(category){
 function selectMode(mode, btnEl, groupSelector){
   if(state.category === 'arith') state.mode = mode;
   else if(state.category === 'combo') state.comboMode = mode;
-  else if(state.category === 'base') state.baseMode = mode;
   document.querySelectorAll(groupSelector).forEach(b=>b.classList.remove('is-active'));
   if(btnEl) btnEl.classList.add('is-active');
+}
+
+function populateBaseMOptions(){
+  const select = $('#base-m');
+  const radices = [2,3,4,5,6,7,8,9];
+  if(state.baseDir === 'from') radices.push(11,12,13,14,15,16);
+  select.innerHTML = radices.map(m=>`<option value="${m}">${m}진법</option>`).join('');
+  select.value = String(state.baseM);
+}
+
+function selectBaseDirection(dir, btnEl){
+  if(dir !== 'to' && dir !== 'from') return;
+  state.baseDir = dir;
+  if(dir === 'to' && state.baseM > 9) state.baseM = 8;
+  document.querySelectorAll('#base-config .mode-btn[data-dir]').forEach(b=>b.classList.toggle('is-active', b === btnEl));
+  populateBaseMOptions();
 }
 
 function selectTier(tier, btnEl, groupSelector){
@@ -59,7 +75,7 @@ function newProblem(){
   } else if(state.category === 'combo'){
     state.problem = generateComboProblem(state.comboMode, state.tier);
   } else {
-    state.problem = generateBaseProblem(state.baseMode, state.baseTier);
+    state.problem = generateBaseProblem(state.baseDir, state.baseM, state.baseTier);
   }
   state.input = '';
   state.locked = false;
@@ -186,7 +202,7 @@ function endSession(){
       ? `flashmath_best_${state.mode}_${state.digitsA}_${state.digitsB}`
       : state.category === 'combo'
         ? `flashmath_best_combo_${state.comboMode}_${state.tier}`
-        : `flashmath_best_base_${state.baseMode}_${state.baseTier}`;
+        : `flashmath_best_base_${state.baseDir}_${state.baseM}_${state.baseTier}`;
     let best = 0;
     try{ best = parseInt(localStorage.getItem(key) || '0', 10); }catch(e){}
     let isNew = false;
@@ -233,9 +249,11 @@ function initHome(){
   document.querySelectorAll('#combo-config .mode-btn').forEach(btn=>{
     btn.addEventListener('click', ()=> selectMode(btn.getAttribute('data-mode'), btn, '#combo-config .mode-btn'));
   });
-  document.querySelectorAll('#base-config .mode-btn').forEach(btn=>{
-    btn.addEventListener('click', ()=> selectMode(btn.getAttribute('data-mode'), btn, '#base-config .mode-btn'));
+  document.querySelectorAll('#base-config .mode-btn[data-dir]').forEach(btn=>{
+    btn.addEventListener('click', ()=> selectBaseDirection(btn.getAttribute('data-dir'), btn));
   });
+  populateBaseMOptions();
+  document.getElementById('base-m').addEventListener('change', (e)=> state.baseM = parseInt(e.target.value,10));
   document.querySelectorAll('#combo-config .tier-row button').forEach(btn=>{
     btn.addEventListener('click', ()=> selectTier(btn.getAttribute('data-tier'), btn, '#combo-config .tier-row button'));
   });

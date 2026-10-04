@@ -130,60 +130,48 @@ function generateComboProblem(mode, tier){
   return { ...p, mode: actualMode };
 }
 
-function numWithBits(bits){ return randInt(1 << (bits-1), (1 << bits) - 1); }
-
-const BASE_TIER = {
-  easy:   { bits:[3,4], octRange:[8,63],     hexDecRange:[10,63],    hexBinRange:[1,15] },
-  normal: { bits:[5,6], octRange:[64,511],   hexDecRange:[64,255],   hexBinRange:[16,127] },
-  hard:   { bits:[7,8], octRange:[512,4095], hexDecRange:[256,4095], hexBinRange:[128,255] },
-};
-function baseCfg(tier){ return BASE_TIER[tier] || BASE_TIER.normal; }
-function digitsAsNumber(str){ return parseInt(str, 10); }
-
-function genDecToBin(tier){
-  const cfg = baseCfg(tier);
-  const n = numWithBits(randInt(cfg.bits[0], cfg.bits[1]));
-  return { displayType:'prompt', promptText:`10진수 ${n} → 2진수로 바꾸면?`, answer: digitsAsNumber(n.toString(2)) };
+function baseMaxDigits(m){
+  let d = 0, v = 1;
+  while(d < 8 && v * m <= 5000){ v *= m; d++; }
+  return d;
 }
-function genBinToDec(tier){
-  const cfg = baseCfg(tier);
-  const n = numWithBits(randInt(cfg.bits[0], cfg.bits[1]));
-  return { displayType:'prompt', promptText:`2진수 ${n.toString(2)} → 10진수로 바꾸면?`, answer: n };
-}
-function genOctal(tier){
-  const cfg = baseCfg(tier);
-  const n = randInt(cfg.octRange[0], cfg.octRange[1]);
-  if(Math.random() < 0.5){
-    return { displayType:'prompt', promptText:`10진수 ${n} → 8진수로 바꾸면?`, answer: digitsAsNumber(n.toString(8)) };
+
+function baseDigitRange(m, tier){
+  const dmax = baseMaxDigits(m);
+  let lo, hi;
+  if(tier === 'easy'){
+    lo = (m === 2) ? 3 : 2;
+    hi = Math.max(lo, Math.floor(dmax * 0.5));
+  } else if(tier === 'hard'){
+    lo = Math.max(2, Math.ceil(dmax * 0.75));
+    hi = dmax;
+  } else {
+    lo = Math.max(2, Math.ceil(dmax * 0.5));
+    hi = Math.max(lo, Math.ceil(dmax * 0.75));
   }
-  return { displayType:'prompt', promptText:`8진수 ${n.toString(8)} → 10진수로 바꾸면?`, answer: n };
-}
-function genHexToDec(tier){
-  const cfg = baseCfg(tier);
-  const n = randInt(cfg.hexDecRange[0], cfg.hexDecRange[1]);
-  return { displayType:'prompt', promptText:`16진수 ${n.toString(16).toUpperCase()} → 10진수로 바꾸면?`, answer: n };
-}
-function genHexToBin(tier){
-  const cfg = baseCfg(tier);
-  const n = randInt(cfg.hexBinRange[0], cfg.hexBinRange[1]);
-  return { displayType:'prompt', promptText:`16진수 ${n.toString(16).toUpperCase()} → 2진수로 바꾸면?`, answer: digitsAsNumber(n.toString(2)) };
-}
-function genBinAdd(tier){
-  const bitsByTier = { easy:[3,3], normal:[4,4], hard:[5,6] };
-  const [lo,hi] = bitsByTier[tier] || bitsByTier.normal;
-  const a = numWithBits(randInt(lo,hi)), b = numWithBits(randInt(lo,hi));
-  return { displayType:'prompt', promptText:`2진수 ${a.toString(2)} + ${b.toString(2)} = ? (2진수로 답하기)`, answer: digitsAsNumber((a+b).toString(2)) };
+  hi = Math.min(hi, dmax);
+  lo = Math.min(lo, hi);
+  return [lo, hi];
 }
 
-const BASE_GENERATORS = { d2b:genDecToBin, b2d:genBinToDec, oct:genOctal, h2d:genHexToDec, h2b:genHexToBin, badd:genBinAdd };
+function numWithDigitsInBase(m, d){
+  return randInt(Math.pow(m, d - 1), Math.pow(m, d) - 1);
+}
 
-function generateBaseProblem(mode, tier){
-  let actualMode = mode;
-  if(mode === 'mixed') actualMode = Object.keys(BASE_GENERATORS)[randInt(0, Object.keys(BASE_GENERATORS).length-1)];
-  const p = BASE_GENERATORS[actualMode](tier);
-  return { ...p, mode: actualMode };
+function generateBaseProblem(dir, m, tier){
+  m = parseInt(m, 10);
+  if(m === 10 || !(m >= 2 && m <= 16)) m = 2;
+  if(dir === 'to' && m > 9) m = 9;
+
+  const [lo, hi] = baseDigitRange(m, tier);
+  const n = numWithDigitsInBase(m, randInt(lo, hi));
+
+  if(dir === 'to'){
+    return { displayType:'prompt', promptText:`10진수 ${n} → ${m}진수로 바꾸면?`, answer: parseInt(n.toString(m), 10), mode: dir };
+  }
+  return { displayType:'prompt', promptText:`${m}진수 ${n.toString(m).toUpperCase()} → 10진수로 바꾸면?`, answer: n, mode: dir };
 }
 
 if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { generateProblem, generateComboProblem, generateBaseProblem, randDigits, ARITH_GENERATORS, COMBO_GENERATORS, BASE_GENERATORS };
+  module.exports = { generateProblem, generateComboProblem, generateBaseProblem, randDigits, ARITH_GENERATORS, COMBO_GENERATORS };
 }

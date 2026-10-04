@@ -1,0 +1,1 @@
+- [Temporary preview ports](temporary-preview-ports.md) — temporary browser-test servers can auto-edit `.replit`; stop them and restore the original config after testing.

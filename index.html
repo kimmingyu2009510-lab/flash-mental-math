@@ -93,20 +93,28 @@
 
         <div id="base-config" style="display:none">
           <div class="mode-grid">
-            <button type="button" class="mode-btn is-active" data-mode="d2b">10진수→2진수</button>
-            <button type="button" class="mode-btn" data-mode="b2d">2진수→10진수</button>
-            <button type="button" class="mode-btn" data-mode="oct">8진수 변환</button>
-            <button type="button" class="mode-btn" data-mode="h2d">16진수→10진수</button>
-            <button type="button" class="mode-btn" data-mode="h2b">16진수→2진수</button>
-            <button type="button" class="mode-btn" data-mode="badd">2진수 덧셈</button>
-            <button type="button" class="mode-btn" data-mode="mixed">혼합</button>
+            <button type="button" class="mode-btn is-active" data-dir="to">10진수 → m진수</button>
+            <button type="button" class="mode-btn" data-dir="from">m진수 → 10진수</button>
+          </div>
+          <div class="digit-row">
+            <label for="base-m">m (몇 진법으로 연습할까요)</label>
+            <select class="digit-select" id="base-m">
+              <option value="2" selected>2진법</option>
+              <option value="3">3진법</option>
+              <option value="4">4진법</option>
+              <option value="5">5진법</option>
+              <option value="6">6진법</option>
+              <option value="7">7진법</option>
+              <option value="8">8진법</option>
+              <option value="9">9진법</option>
+            </select>
           </div>
           <div class="tier-row">
             <button type="button" data-tier="easy">쉬움</button>
             <button type="button" class="is-active" data-tier="normal">보통</button>
             <button type="button" data-tier="hard">어려움</button>
           </div>
-          <small>2진수 답도 숫자 0과 1로 입력해요. 앞의 0은 생략해도 돼요. 16진수는 문제로만 나오고 답은 항상 숫자예요.</small>
+          <small>10진수 → m진수 문제는 답을 숫자 0~9로 입력해요. 앞의 0은 생략해도 돼요. 11~16진수는 'm진수 → 10진수' 문제에서만 나와요 (A=10, B=11, C=12, D=13, E=14, F=15).</small>
         </div>
 
         <div class="setup-actions">
