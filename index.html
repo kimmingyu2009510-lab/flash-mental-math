@@ -1,1 +1,193 @@
-   <h1>연결 테스트 2</h1>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>번쩍암산 — 사칙연산 암산 트레이닝</title>
+<meta name="description" content="사칙연산과 경우의수(순열·조합)를 암산으로 빠르게 연습하는 사이트, 번쩍암산.">
+<link rel="stylesheet" href="css/style.css">
+<!-- Google AdSense 코드는 승인 후 이 자리에 삽입하세요 -->
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <a href="index.html" class="logo">번쩍<span>암산</span></a>
+    <nav>
+      <ul class="site-nav">
+        <li><a href="index.html" aria-current="page">홈</a></li>
+        <li><a href="articles/index.html">암산 팁</a></li>
+        <li><a href="about.html">소개</a></li>
+        <li><a href="contact.html">문의</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="container hero-copy">
+    <p class="eyebrow">사칙연산 · 경우의수 암산 트레이닝</p>
+    <h1>숫자만 보고, 머리로 계산하세요</h1>
+    <p class="hero-sub">사칙연산은 자릿수를, 경우의수(순열·조합 등)는 난이도를 골라 연습합니다. 정답을 맞혀야만 다음 문제로 넘어가요.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+
+    <div id="view-setup">
+      <div class="setup-panel">
+        <div class="category-toggle">
+          <button type="button" data-category="arith" class="is-active">사칙연산</button>
+          <button type="button" data-category="combo">경우의수</button>
+        </div>
+
+        <div id="arith-config">
+          <div class="mode-grid">
+            <button type="button" class="mode-btn is-active" data-mode="add"><span class="mode-symbol">+</span>덧셈</button>
+            <button type="button" class="mode-btn" data-mode="sub"><span class="mode-symbol">−</span>뺄셈</button>
+            <button type="button" class="mode-btn" data-mode="mul"><span class="mode-symbol">×</span>곱셈</button>
+            <button type="button" class="mode-btn" data-mode="div"><span class="mode-symbol">÷</span>나눗셈</button>
+            <button type="button" class="mode-btn" data-mode="mixed"><span class="mode-symbol">±×÷</span>혼합</button>
+          </div>
+
+          <div class="digit-row">
+            <label for="digit-a">첫 번째 수 자릿수</label>
+            <select class="digit-select" id="digit-a">
+              <option value="1">1자리</option>
+              <option value="2" selected>2자리</option>
+              <option value="3">3자리</option>
+              <option value="4">4자리</option>
+              <option value="5">5자리</option>
+            </select>
+          </div>
+          <div class="digit-row">
+            <label for="digit-b">두 번째 수 자릿수</label>
+            <select class="digit-select" id="digit-b">
+              <option value="1" selected>1자리</option>
+              <option value="2">2자리</option>
+              <option value="3">3자리</option>
+              <option value="4">4자리</option>
+              <option value="5">5자리</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="combo-config" style="display:none">
+          <div class="mode-grid">
+            <button type="button" class="mode-btn is-active" data-mode="perm">순열<br><span style="font-size:0.75rem;opacity:0.7">nPr</span></button>
+            <button type="button" class="mode-btn" data-mode="comb">조합<br><span style="font-size:0.75rem;opacity:0.7">nCr</span></button>
+            <button type="button" class="mode-btn" data-mode="product">곱의 법칙</button>
+            <button type="button" class="mode-btn" data-mode="sum">합의 법칙</button>
+            <button type="button" class="mode-btn" data-mode="power">동전·주사위형</button>
+            <button type="button" class="mode-btn" data-mode="mixed">혼합</button>
+          </div>
+          <div class="tier-row">
+            <button type="button" data-tier="easy">쉬움</button>
+            <button type="button" class="is-active" data-tier="normal">보통</button>
+            <button type="button" data-tier="hard">어려움</button>
+          </div>
+        </div>
+
+        <div class="setup-actions">
+          <button type="button" class="btn btn-ghost" id="start-practice-btn">연습 모드</button>
+          <button type="button" class="btn btn-primary" id="start-challenge-btn">60초 챌린지</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="view-practice" style="display:none">
+      <div class="practice-panel">
+        <div class="practice-stats">
+          <span id="practice-mode-label">연습 모드</span>
+          <span>맞힌 문제 <b id="solved-count">0</b></span>
+          <span id="timer-stat" style="display:none"></span>
+        </div>
+
+        <div class="problem-column" id="problem-column">
+          <div class="problem-row"><span class="op-symbol"></span><span id="prob-a">0</span></div>
+          <div class="problem-row"><span class="op-symbol" id="prob-op">+</span><span id="prob-b">0</span></div>
+          <div class="problem-rule"></div>
+        </div>
+        <div class="problem-notation" id="problem-notation" style="display:none"></div>
+        <p class="problem-prompt-text" id="problem-prompt" style="display:none"></p>
+
+        <div class="answer-display" id="answer-display"><span class="placeholder">?</span></div>
+
+        <div class="keypad">
+          <button type="button" data-key="1">1</button>
+          <button type="button" data-key="2">2</button>
+          <button type="button" data-key="3">3</button>
+          <button type="button" data-key="4">4</button>
+          <button type="button" data-key="5">5</button>
+          <button type="button" data-key="6">6</button>
+          <button type="button" data-key="7">7</button>
+          <button type="button" data-key="8">8</button>
+          <button type="button" data-key="9">9</button>
+          <button type="button" data-key="back">⌫</button>
+          <button type="button" data-key="0">0</button>
+          <button type="button" class="key-enter" data-key="enter">확인</button>
+        </div>
+
+        <div class="practice-footer">
+          <button type="button" class="btn btn-ghost btn-sm" id="quit-practice-btn">그만하기</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="view-result" style="display:none">
+      <div class="result-panel">
+        <div class="new-record" id="result-record-badge" style="display:none">신기록!</div>
+        <div class="big-num" id="result-big">0문제</div>
+        <div class="label" id="result-label"></div>
+        <div class="result-stats" id="result-stats"></div>
+        <div class="setup-actions" style="max-width:340px; margin:0 auto;">
+          <button type="button" class="btn btn-ghost" id="back-to-setup-btn">설정으로</button>
+          <button type="button" class="btn btn-primary" id="retry-btn">다시 도전</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-head">
+      <h2>암산 팁</h2>
+      <a class="link" href="articles/index.html">전체 보기</a>
+    </div>
+    <div class="article-grid">
+      <a class="article-card" href="articles/addition-tips.html"><h3>덧셈 빨리 하는 법</h3><p>자릿수를 나눠서 더하는 요령.</p></a>
+      <a class="article-card" href="articles/multiplication-tips.html"><h3>곱셈 암산 요령</h3><p>11~19단과 어림 계산법.</p></a>
+      <a class="article-card" href="articles/subtraction-tips.html"><h3>뺄셈 빨리 하는 법</h3><p>보수를 이용한 뺄셈 암산.</p></a>
+      <a class="article-card" href="articles/division-tips.html"><h3>나눗셈 암산 요령</h3><p>나머지를 어림하는 요령.</p></a>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-head"><h2>번쩍암산은 이렇게 연습해요</h2></div>
+    <div class="prose">
+      <p>정답을 맞혀야만 다음 문제로 넘어갑니다. 틀려도 괜찮아요, 다시 계산해서 맞히면 됩니다. 연습 모드는 시간 제한 없이 편하게, 60초 챌린지는 정해진 시간 안에 몇 문제나 풀 수 있는지 겨루는 모드예요. 챌린지 최고기록은 이 브라우저에만 저장됩니다.</p>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="copyright">© 2026 번쩍암산</p>
+    <ul class="footer-links">
+      <li><a href="about.html">소개</a></li>
+      <li><a href="contact.html">문의</a></li>
+      <li><a href="privacy.html">개인정보처리방침</a></li>
+      <li><a href="terms.html">이용약관</a></li>
+    </ul>
+  </div>
+</footer>
+
+<script src="js/generators.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
