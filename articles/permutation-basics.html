@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>순열 기초 — SumGym</title>
+<meta name="description" content="순서가 중요한 경우의 수 nPr을 팩토리얼과 곱의 법칙으로 계산하는 방법을 알아봅니다.">
+<link rel="stylesheet" href="../css/style.css">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3552085486646394" crossorigin="anonymous"></script>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <a href="../index.html" class="logo">Sum<span>Gym</span></a>
+    <nav>
+      <ul class="site-nav">
+        <li><a href="../index.html">홈</a></li>
+        <li><a href="index.html" aria-current="page">암산 팁</a></li>
+        <li><a href="../about.html">소개</a></li>
+        <li><a href="../contact.html">문의</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<section class="article-hero">
+  <div class="container">
+    <p class="kicker">암산 팁</p>
+    <h1>순열 기초</h1>
+    <p class="lede">순서가 달라지면 다른 결과가 되는 문제에서는 순열을 씁니다. nPr은 n부터 1씩 줄이며 r개를 곱한 값입니다.</p>
+  </div>
+</section>
+
+<section class="content-block">
+  <div class="container prose">
+    <h2>순열이 필요한 이유</h2>
+    <p>줄 세우기, 순위 정하기, 비밀번호 만들기처럼 순서가 달라지면 다른 결과가 되는 문제에서 경우의 수를 셀 때 순열을 씁니다. 하나하나 나열하면 금방 빠뜨리기 때문에, 곱셈으로 한 번에 계산하는 방법을 아는 것이 중요합니다.</p>
+    <p>순열은 암산하기에도 괜찮은 주제입니다. 계산에 필요한 곱의 개수가 r개로 제한되기 때문에 5P2나 7P3처럼 작은 수에서는 몇 번의 곱셈으로 끝납니다.</p>
+    <h2>원리: 자리를 하나씩 채우는 곱셈</h2>
+    <p>n개 중에서 r개를 골라 순서대로 놓는다고 해 봅시다. 첫 번째 자리에는 n개 중 어느 것이든 올 수 있으므로 n가지입니다. 하나를 썼으므로 두 번째 자리에는 n − 1가지가 남고, 세 번째 자리에는 n − 2가지가 남습니다. 이런 식으로 r번째 자리까지 채우면 전체 경우의 수는 곱의 법칙에 따라 n × (n − 1) × … × (n − r + 1)입니다. 이것이 nPr입니다.</p>
+    <p>이 곱은 팩토리얼을 써서 nPr = n! ÷ (n − r)!로도 나타냅니다. 팩토리얼 n!은 1부터 n까지 모든 자연수의 곱입니다. 1! = 1, 2! = 2, 3! = 6, 4! = 24, 5! = 120, 6! = 720, 7! = 5,040이고, 0!은 1로 약속합니다. n개를 모두 줄 세우는 경우의 수는 nPn = n!입니다.</p>
+    <h2>단계별 계산 방법</h2>
+    <ol>
+      <li>순서를 바꾸면 다른 결과가 되는 문제인지 확인합니다. 자리, 등수, 줄 서기가 나오면 순열입니다.</li>
+      <li>전체 개수 n과 고르는 개수 r을 찾습니다.</li>
+      <li>n부터 시작해서 1씩 줄이면서 r개의 수를 곱합니다.</li>
+      <li>곱한 수의 개수가 r개인지 마지막에 세어 봅니다.</li>
+    </ol>
+    <h2>예제 1: 5P2</h2>
+    <p>1단계: 곱할 수는 2개입니다. 5부터 내려가며 5 × 4를 계산합니다.</p>
+    <p>2단계: 5 × 4 = 20입니다.</p>
+    <p>검산: 5! ÷ 3! = 120 ÷ 6 = 20입니다.</p>
+    <h2>예제 2: 7P3</h2>
+    <p>1단계: 곱할 수는 3개입니다. 7 × 6 × 5를 계산합니다.</p>
+    <p>2단계: 7 × 6 = 42이고 42 × 5 = 210입니다.</p>
+    <p>검산: 7! ÷ 4! = 5,040 ÷ 24 = 210입니다.</p>
+    <h2>예제 3: 선수 6명 중에서 1등, 2등, 3등을 정하는 방법</h2>
+    <p>1단계: 등수가 다르므로 순서가 중요한 순열입니다. 6P3을 계산합니다.</p>
+    <p>2단계: 6 × 5 × 4를 계산하면 30 × 4 = 120입니다.</p>
+    <p>검산: 6! ÷ 3! = 720 ÷ 6 = 120입니다.</p>
+    <h2>예제 4: 1, 2, 3, 4, 5 중 서로 다른 세 개를 골라 만드는 세 자리 수의 개수</h2>
+    <p>1단계: 자리마다 의미가 다르므로 순열입니다. 5P3을 계산합니다.</p>
+    <p>2단계: 5 × 4 × 3 = 60입니다.</p>
+    <p>검산: 5! ÷ 2! = 120 ÷ 2 = 60입니다.</p>
+    <h2>예제 5: 책 4권을 책꽂이에 한 줄로 놓는 방법</h2>
+    <p>1단계: 4권 모두를 줄 세우므로 4P4 = 4!입니다.</p>
+    <p>2단계: 4 × 3 × 2 × 1 = 24입니다.</p>
+    <p>검산: 4개 중 4개를 고르는 순열이므로 곱할 수가 4개인 것도 맞습니다.</p>
+    <h2>자주 하는 실수</h2>
+    <p>첫째, 순서가 상관없는 문제에 순열을 쓰는 실수입니다. 대표 두 명을 뽑는 문제에서 5P2 = 20을 구하면 같은 팀을 두 번씩 센 값이 됩니다. 이런 문제는 다음 글에서 다루는 조합입니다.</p>
+    <p>둘째, 곱하는 수의 개수를 틀리는 실수입니다. 7P3은 7 × 6 × 5처럼 3개를 곱하는 것이지 7 × 6 × 5 × 4가 아닙니다. 곱하기 전에 r을 적어 두고 그 개수만큼만 곱합니다.</p>
+    <p>셋째, 0!을 0으로 알고 있는 실수입니다. 0!은 1입니다. nPn = n! ÷ 0!이 n!이 되려면 0!이 1이어야 합니다.</p>
+    <p>넷째, 같은 것이 섞여 있거나 중복을 허용하는 문제에 공식을 그대로 쓰는 실수입니다. 이 글의 공식은 서로 다른 n개에서 중복 없이 r개를 고르는 경우에만 맞습니다.</p>
+    <h2>연습 방법</h2>
+    <p>SumGym 홈에서 경우의수 탭을 고르고 순열 모드를 선택합니다. 7P3처럼 표기가 나오면 n부터 r개를 곱해서 값을 입력하면 됩니다. 난이도를 쉬움, 보통, 어려움으로 올릴수록 n과 r이 커집니다. 처음에는 쉬움에서 곱할 개수를 세는 습관부터 들이고, 정확하게 풀 수 있게 되면 난이도를 올려 보세요. 정답을 맞혀야 다음 문제로 넘어가며, 60초 챌린지로 속도도 기록할 수 있습니다.</p>
+    <p><a href="../index.html">SumGym 홈으로 가기</a></p>
+    <h2>한 줄 요약</h2>
+    <div class="tip-box">nPr은 n부터 1씩 줄이면서 r개를 곱한 값이고, 순서가 중요할 때 씁니다.</div>
+    <h2>관련 글</h2>
+    <div class="article-grid">
+      <a class="article-card" href="combination-basics.html"><h3>조합 기초</h3><p>순서가 없는 경우의 수 nCr 계산하기.</p></a>
+      <a class="article-card" href="counting-rules.html"><h3>곱의 법칙과 합의 법칙</h3><p>곱할지 더할지 구분하는 기준.</p></a>
+      <a class="article-card" href="coin-dice-counting.html"><h3>동전·주사위 경우의수</h3><p>2의 거듭제곱, 6의 거듭제곱과 눈의 합 세기.</p></a>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="copyright">© 2026 SumGym</p>
+    <ul class="footer-links">
+      <li><a href="../about.html">소개</a></li>
+      <li><a href="../contact.html">문의</a></li>
+      <li><a href="../privacy.html">개인정보처리방침</a></li>
+      <li><a href="../terms.html">이용약관</a></li>
+    </ul>
+  </div>
+</footer>
+
+<!-- MY-NOTE: 여기에 직접 경험 추가 -->
+</body>
+</html>

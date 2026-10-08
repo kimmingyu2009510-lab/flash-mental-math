@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>뺄셈 빨리 하는 법 — SumGym</title>
-<meta name="description" content="보수와 자릿수 나누기를 이용해 뺄셈을 빠르게 암산하는 요령.">
+<meta name="description" content="보정, 자리별 나누기, 위로 세기, 양쪽에 같은 수 더하기 등 뺄셈 암산 요령과 예제.">
 <link rel="stylesheet" href="../css/style.css">
-<!-- Google AdSense 코드는 승인 후 이 자리에 삽입하세요 -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3552085486646394" crossorigin="anonymous"></script>
 </head>
 <body>
 
@@ -28,22 +28,61 @@
   <div class="container">
     <p class="kicker">암산 팁</p>
     <h1>뺄셈 빨리 하는 법</h1>
-    <p class="lede">빼는 수를 딱 떨어지는 수로 바꾼 뒤 나중에 보정하면, 받아내림을 계속 신경 쓰지 않아도 됩니다.</p>
+    <p class="lede">뺄셈의 어려움은 대부분 받아내림에서 옵니다. 받아내림이 생기지 않도록 수를 바꿔서 계산하는 방법을 정리했습니다.</p>
   </div>
 </section>
 
 <section class="content-block">
   <div class="container prose">
-    <h2>요령 1</h2>
-    <div class="tip-box">빼는 수를 올려서 딱 떨어지게 만든 뒤, 올린 만큼 다시 더해준다.</div>
-    <p>예) 83 − 29 → 83 − 30 + 1 = 53 + 1 = 54</p>
-
-    <h2>요령 2</h2>
-    <div class="tip-box">자릿수를 나눠서 빼기: 십의 자리를 먼저 뺀 뒤 일의 자리를 처리한다.</div>
-    <p>예) 76 − 24 → (70−20) + (6−4) = 50 + 2 = 52</p>
-
-    <h2>직접 연습해보기</h2>
-    <p><a href="../index.html">홈으로 돌아가서</a> 뺄셈 모드를 골라 연습해보세요.</p>
+    <h2>뺄셈이 덧셈보다 어렵게 느껴지는 이유</h2>
+    <p>같은 크기의 수를 계산해도 뺄셈이 덧셈보다 어렵게 느껴지는 경우가 많습니다. 받아내림이 나오기 때문입니다. 일의 자리에서 빼려는 수가 더 크면 윗자리에서 10을 빌려 와야 하고, 그동안 윗자리의 값이 하나 줄었다는 사실까지 기억해야 합니다.</p>
+    <p>그래서 암산에서는 받아내림을 직접 하기보다, 받아내림이 생기지 않도록 수를 바꾸어 계산하는 방법을 씁니다. 아래의 요령은 모두 이 방향입니다.</p>
+    <h2>원리: 뺄셈은 덧셈의 반대이고, 차는 변하지 않는다</h2>
+    <p>뺄셈은 덧셈의 반대 계산입니다. 83 − 29가 54라는 말은 54 + 29가 83이라는 뜻입니다. 이 관계를 이용하면 계산이 맞는지 덧셈으로 확인할 수 있습니다.</p>
+    <p>또 하나 중요한 성질이 있습니다. 빼는 수와 빼이는 수에 같은 수를 더해도 차는 변하지 않습니다. 143 − 68에서 양쪽에 2를 더하면 145 − 70이 되고, 둘의 차는 똑같이 75입니다. 빼는 수를 10의 배수로 만들면 계산이 훨씬 쉬워집니다.</p>
+    <h2>요령 1: 빼는 수를 올려서 빼고 다시 더하기</h2>
+    <div class="tip-box">빼는 수를 딱 떨어지는 수로 올려서 뺀 뒤, 올린 만큼 다시 더해 준다.</div>
+    <p>83 − 29에서 29를 30으로 올리면 83 − 30 = 53이 됩니다. 1을 더 뺀 셈이므로 마지막에 1을 더해서 54입니다. 덧셈의 보정과 방향이 반대라는 점만 기억하면 됩니다. 더 빼면 나중에 더하고, 덜 빼면 나중에 뺍니다.</p>
+    <div class="tip-box"><strong>예 1) 83 − 29</strong><br>83 − 30 + 1 = 53 + 1 = 54</div>
+    <div class="tip-box"><strong>예 2) 502 − 198</strong><br>502 − 200 + 2 = 302 + 2 = 304</div>
+    <h2>요령 2: 자리별로 나누어 빼기</h2>
+    <div class="tip-box">큰 자리부터 하나씩 빼 나간다.</div>
+    <p>빼는 수를 십의 자리와 일의 자리로 나누어, 빼이는 수에서 차례로 빼는 방법입니다. 각 단계에서 받아내림이 없도록 빼는 수를 쪼개는 것이 핵심입니다.</p>
+    <div class="tip-box"><strong>예 1) 76 − 24</strong><br>76 − 20 = 56<br>56 − 4 = 52</div>
+    <div class="tip-box"><strong>예 2) 82 − 47</strong><br>82 − 40 = 42<br>42 − 7 = 35</div>
+    <p>두 번째 예처럼 일의 자리에서 빼려는 수가 더 큰 경우에도, 십의 자리를 먼저 빼 놓고 나서 남은 수에서 빼면 받아내림을 따로 생각하지 않아도 됩니다.</p>
+    <h2>요령 3: 위로 세어 올라가며 차이 구하기</h2>
+    <div class="tip-box">작은 수에서 큰 수까지 딱 떨어지는 지점을 거쳐 올라가며 거리를 더한다.</div>
+    <p>1,000처럼 큰 수에서 어떤 수를 뺄 때는, 빼는 수에서 출발해 1,000까지 얼마나 올라가야 하는지 세는 방법이 편합니다. 거스름돈을 계산하는 방식과 같습니다.</p>
+    <div class="tip-box"><strong>예) 1,000 − 638</strong><br>638 → 700: 62<br>700 → 1,000: 300<br>62 + 300 = 362</div>
+    <h2>요령 4: 양쪽에 같은 수를 더해 쉽게 만들기</h2>
+    <div class="tip-box">빼이는 수와 빼는 수에 같은 수를 더해서 빼는 수를 10의 배수로 만든다.</div>
+    <div class="tip-box"><strong>예 1) 143 − 68</strong><br>양쪽에 2를 더하면 145 − 70<br>= 75</div>
+    <div class="tip-box"><strong>예 2) 5,200 − 1,876</strong><br>양쪽에 24를 더하면 5,224 − 1,900<br>= 3,324</div>
+    <p>양쪽에 같은 수를 더하는 것을 잊고 한쪽에만 더하면 답이 틀립니다. 이 요령은 두 수를 모두 바꾼다는 점을 꼭 확인하세요.</p>
+    <h2>연습 예제</h2>
+    <div class="tip-box"><strong>예제 1) 91 − 38</strong><br>91 − 40 + 2 = 51 + 2 = 53</div>
+    <div class="tip-box"><strong>예제 2) 624 − 385</strong><br>624 − 400 = 224<br>15를 더 뺐으므로 224 + 15 = 239</div>
+    <div class="tip-box"><strong>예제 3) 3,000 − 1,467</strong><br>3,000 − 1,500 = 1,500<br>33을 더 뺐으므로 1,500 + 33 = 1,533</div>
+    <div class="tip-box"><strong>예제 4) 450 − 267</strong><br>450 − 270 = 180<br>3을 더 뺐으므로 180 + 3 = 183</div>
+    <h2>자주 하는 실수</h2>
+    <ul>
+      <li><strong>보정 방향 혼동</strong>: 빼는 수를 올려서 뺐다면 나중에 <u>더해야</u> 합니다. 덧셈의 보정과 반대라서 가장 헷갈립니다.</li>
+      <li><strong>받아내림 누락</strong>: 일의 자리에서 빌려 온 뒤 십의 자리를 줄이는 것을 잊습니다. 자리별로 나누어 빼면 피할 수 있습니다.</li>
+      <li><strong>한쪽만 바꾸기</strong>: 양쪽에 같은 수를 더하는 요령에서 한쪽에만 더하는 실수입니다.</li>
+      <li><strong>검산 생략</strong>: 뺄셈은 결과에 빼는 수를 더하면 처음 수가 되는지 바로 확인할 수 있습니다. 시간이 허락하면 덧셈으로 한 번 확인하세요.</li>
+    </ul>
+    <h2>SumGym에서 연습하는 방법</h2>
+    <p>SumGym 홈에서 <strong>사칙연산</strong> 탭을 선택하고 <strong>뺄셈</strong> 모드를 고릅니다. SumGym의 뺄셈 문제는 앞의 수가 항상 뒤의 수보다 크거나 같아서 답이 음수로 나오지 않습니다. 처음에는 2자리에서 1자리를 빼는 것부터 시작해서, 3자리에서 2자리를 빼는 문제로 늘려 보세요. 정답을 맞혀야만 다음 문제로 넘어가므로, 틀렸다면 같은 문제를 다시 계산하면 됩니다. 익숙해지면 <strong>60초 챌린지</strong>로 1분 동안 몇 문제를 맞히는지 기록해 보세요. 최고기록은 접속한 브라우저에만 저장됩니다.</p>
+    <p><a href="../index.html">SumGym 홈으로 가기</a></p>
+    <h2>한 줄 요약</h2>
+    <div class="tip-box">받아내림이 생기지 않도록 빼는 수를 딱 떨어지게 바꾸고, 보정 방향만 정확히 기억하면 됩니다.</div>
+    <h2>관련 글</h2>
+    <div class="article-grid">
+      <a class="article-card" href="addition-tips.html"><h3>덧셈 빨리 하는 법</h3><p>자릿수를 나누고 보수를 이용하는 요령.</p></a>
+      <a class="article-card" href="multiplication-tips.html"><h3>곱셈 암산 요령</h3><p>분배법칙과 어림 계산법.</p></a>
+      <a class="article-card" href="percent-mental-math.html"><h3>퍼센트 암산하는 법</h3><p>쉬운 비율로 나누어 퍼센트 계산하기.</p></a>
+    </div>
   </div>
 </section>
 
@@ -59,5 +98,6 @@
   </div>
 </footer>
 
+<!-- MY-NOTE: 여기에 직접 경험 추가 -->
 </body>
 </html>
